@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Be Better</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-bg"></div>
+  <div class="auth-grid"></div>
+  <div class="auth-card">
+
+    <div class="auth-brand">
+      <div class="logo-mark">🌱</div>
+      <h1>To Be Better</h1>
+      <p>Your daily habit tracker &amp; planner</p>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="tab-btn"        onclick="switchAuthTab('register')">Sign Up</button>
+    </div>
+
+    <div class="auth-error" id="auth-error"></div>
+
+    <!-- Sign In Form -->
+    <div id="login-form">
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text"     id="login-user" placeholder="Enter your username">
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="Enter your password">
+      </div>
+      <button class="auth-btn" onclick="handleLogin()">Sign In →</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="register-form" style="display:none">
+      <div class="input-group">
+        <label>Full Name</label>
+        <input type="text"     id="reg-name" placeholder="Your full name">
+      </div>
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text"     id="reg-user" placeholder="Choose a username">
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="Choose a password">
+      </div>
+      <button class="auth-btn" onclick="handleRegister()">Create Account →</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════ -->
+<div id="app">
+  <div class="app-shell">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌱</div>
+
+      <nav class="nav-items">
+        <button class="nav-item active" data-page="home"     onclick="navigate('home')">
+          🏠<span class="nav-tooltip">Home</span>
+        </button>
+        <button class="nav-item"        data-page="schedule" onclick="navigate('schedule')">
+          📅<span class="nav-tooltip">Schedule</span>
+        </button>
+        <button class="nav-item"        data-page="workout"  onclick="navigate('workout')">
+          💪<span class="nav-tooltip">Workout Catalog</span>
+        </button>
+        <button class="nav-item"        data-page="biodata"  onclick="navigate('biodata')">
+          👤<span class="nav-tooltip">Profile</span>
+        </button>
+        <button class="nav-item"        data-page="progress" onclick="navigate('progress')">
+          📊<span class="nav-tooltip">Progress</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="logout-btn" onclick="handleLogout()">⬅</button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <div class="main-content">
+
+      <header class="topbar">
+        <span class="topbar-title" id="page-title">Home</span>
+        <span class="topbar-date"  id="topbar-date"></span>
+        <button class="avatar-btn" id="avatar-btn" onclick="navigate('biodata')"></button>
+      </header>
+
+      <div class="page-content">
+
+        <!-- ───────────── HOME PAGE ───────────── -->
+        <div class="page active" id="page-home">
+
+          <div class="section-header" id="home-greeting">Good morning! 👋</div>
+          <div class="section-sub">Here's your overview for today.</div>
+
+          <!-- Stats row -->
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-num green"  id="stat-done">0</div>
+              <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num purple" id="stat-total">0</div>
+              <div class="stat-label">Total Today</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num orange" id="stat-pct">0%</div>
+              <div class="stat-label">Success Rate</div>
+            </div>
+          </div>
+
+          <!-- Quote card -->
+          <div class="quote-card" id="quote-card">
+            <div class="quote-text"   id="quote-text">Loading quote…</div>
+            <div class="quote-author" id="quote-author"></div>
+          </div>
+
+          <!-- To-Do List -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon green">✅</div>
+              <div>
+                <div class="card-title">Today's To-Do List</div>
+                <div class="card-subtitle" id="todo-subtitle">Synced from your schedule</div>
+              </div>
+            </div>
+            <div id="todo-list-container"></div>
+          </div>
+
+        </div><!-- /page-home -->
+
+
+        <!-- ───────────── SCHEDULE PAGE ───────────── -->
+        <div class="page" id="page-schedule">
+
+          <div class="section-header">Schedule</div>
+          <div class="section-sub">Set your weekly lecture &amp; workout plan. Today's tasks sync automatically.</div>
+
+          <div class="day-tabs" id="day-tabs"></div>
+
+          <div class="card">
+
+            <!-- Lecture section -->
+            <div class="schedule-section">
+              <div class="schedule-section-title">📚 Lecture Schedule</div>
+              <div class="add-item-row">
+                <input type="text" id="lec-input" placeholder="e.g., Calculus 08:00 – 10:00">
+                <button class="add-btn" onclick="addScheduleItem('lecture')">+ Add</button>
+              </div>
+              <div id="lec-list"></div>
+            </div>
+
+            <!-- Workout section -->
+            <div class="schedule-section">
+              <div class="schedule-section-title">🏋️ Workout Schedule</div>
+              <div class="add-item-row">
+                <input type="text" id="work-input" placeholder="e.g., Push-ups 3×15">
+                <button class="add-btn" onclick="addScheduleItem('workout')">+ Add</button>
+              </div>
+              <div id="work-list"></div>
+            </div>
+
+          </div>
+        </div><!-- /page-schedule -->
+
+
+        <!-- ───────────── WORKOUT CATALOG PAGE ───────────── -->
+        <div class="page" id="page-workout">
+
+          <div class="section-header">Movement Catalog</div>
+          <div class="section-sub">Reference guide for exercises — instructions and categories.</div>
+
+          <div class="workout-filter" id="workout-filter"></div>
+          <div class="workout-grid"   id="workout-grid"></div>
+
+        </div><!-- /page-workout -->
+
+
+        <!-- ───────────── PROFILE / BIODATA PAGE ───────────── -->
+        <div class="page" id="page-biodata">
+
+          <div class="section-header">Profile</div>
+          <div class="section-sub">Your personal information.</div>
+
+          <div class="card">
+
+            <!-- View mode -->
+            <div class="bio-view" id="bio-view">
+              <div style="display:flex;flex-direction:column;align-items:center;padding-bottom:24px;border-bottom:1px solid var(--border);margin-bottom:20px;">
+                <div class="bio-avatar" id="bio-avatar-big"></div>
+                <div class="bio-name"   id="bio-name-display"></div>
+                <div style="color:var(--text-muted);font-size:13px;" id="bio-user-display"></div>
+              </div>
+              <div id="bio-details-list"></div>
+              <button class="add-btn" style="margin-top:20px;width:100%" onclick="showEditBio()">✏️ Edit Profile</button>
+            </div>
+
+            <!-- Edit mode -->
+            <div class="edit-bio-form" id="bio-edit-form">
+              <div class="input-group"><label>Full Name</label>        <input type="text" id="bio-name-input"></div>
+              <div class="input-group"><label>Student ID</label>       <input type="text" id="bio-nim-input"   placeholder="e.g., 2024001"></div>
+              <div class="input-group"><label>Major / Faculty</label>  <input type="text" id="bio-major-input" placeholder="e.g., Computer Science"></div>
+              <div class="input-group"><label>University</label>       <input type="text" id="bio-univ-input"  placeholder="e.g., Universitas Indonesia"></div>
+              <div class="input-group"><label>Semester</label>         <input type="text" id="bio-sem-input"   placeholder="e.g., 3"></div>
+              <div style="display:flex;gap:10px;margin-top:8px">
+                <button class="add-btn" style="flex:1" onclick="saveBio()">Save Changes</button>
+                <button class="add-btn" style="flex:1;background:var(--surface2);color:var(--text)" onclick="cancelEditBio()">Cancel</button>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /page-biodata -->
+
+
+        <!-- ───────────── PROGRESS PAGE ───────────── -->
+        <div class="page" id="page-progress">
+
+          <div class="section-header">Progress</div>
+          <div class="section-sub">Track your habit completion over time.</div>
+
+          <!-- Today's circle -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon green">🎯</div>
+              <div>
+                <div class="card-title">Today's Achievement</div>
+                <div class="card-subtitle">Tasks completed vs total</div>
+              </div>
+            </div>
+            <div class="progress-big">
+              <div class="progress-circle-wrap">
+                <svg viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%"   style="stop-color:#6ee7b7"/>
+                      <stop offset="100%" style="stop-color:#818cf8"/>
+                    </linearGradient>
+                  </defs>
+                  <circle class="progress-circle-track" cx="50" cy="50" r="40"/>
+                  <circle class="progress-circle-fill"  cx="50" cy="50" r="40"
+                    id="prog-circle"
+                    stroke-dasharray="251.2"
+                    stroke-dashoffset="251.2"/>
+                </svg>
+                <div class="progress-circle-label" id="prog-pct-label">0%</div>
+              </div>
+              <div style="font-size:14px;color:var(--text-muted)">
+                <span id="prog-done">0</span> of <span id="prog-total">0</span> tasks completed today
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly history -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon purple">📈</div>
+              <div>
+                <div class="card-title">Weekly Overview</div>
+                <div class="card-subtitle">Historical completion rates</div>
+              </div>
+            </div>
+            <div class="history-list" id="history-list"></div>
+          </div>
+
+        </div><!-- /page-progress -->
+
+      </div><!-- /page-content -->
+    </div><!-- /main-content -->
+  </div><!-- /app-shell -->
+</div><!-- /app -->
+
+
+<!-- Toast notification -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toast-msg"></span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
